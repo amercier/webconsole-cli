@@ -4,6 +4,9 @@ webconsole-cli
 Composer package that provides a command-line interface to
 [Nickolay Kovalev's Web Console](http://web-console.org/).
 
+[![Latest Stable Version](https://img.shields.io/packagist/v/amercier/webconsole-cli.svg)](https://packagist.org/packages/amercier/webconsole-cli)
+[![PHP version](https://img.shields.io/packagist/php-v/amercier/webconsole-cli.svg)](https://packagist.org/packages/amercier/webconsole-cli)
+[![License](https://img.shields.io/packagist/l/amercier/webconsole-cli.svg)](https://packagist.org/packages/amercier/webconsole-cli)
 
 Requirements
 ------------

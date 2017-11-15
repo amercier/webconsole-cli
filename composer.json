@@ -13,6 +13,7 @@
     "bin/webconsole"
   ],
   "require": {
+    "php": ">=5.3.2",
     "amercier/cli-helpers": "^1.4"
   }
 }

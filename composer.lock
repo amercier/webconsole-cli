@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "3143f7d86373f1e074083954567ecc78",
+    "content-hash": "7aaf3ee1acb0a6e2203f83ba7939e041",
     "packages": [
         {
             "name": "amercier/cli-helpers",
@@ -61,6 +61,8 @@
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "php": ">=5.3.2"
+    },
     "platform-dev": []
 }
