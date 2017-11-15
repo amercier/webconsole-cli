@@ -6,7 +6,7 @@ if (!defined('STDIN')) {
     abort('Running from web server is forbidden');
 }
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../../../autoload.php';
 
 use Cli\Helpers\DocumentedScript;
 use Cli\Helpers\Parameter;
