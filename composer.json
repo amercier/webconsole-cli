@@ -1,0 +1,13 @@
+{
+  "name": "amercier/webconsole-cli",
+  "description": "Command-line interface for Nickolay Kovalev's Web Console",
+  "type": "library",
+  "license": "ISC",
+  "authors": [
+    {
+      "name": "Alex Mercier",
+      "email": "pro.alexandre.mercier@gmail.com"
+    }
+  ],
+  "require": {}
+}
