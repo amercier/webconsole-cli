@@ -1,0 +1,132 @@
+#!/usr/bin/env php
+<?php
+
+ini_set('display_errors', 'stderr');
+if (!defined('STDIN')) {
+    abort('Running from web server is forbidden');
+}
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+use Cli\Helpers\DocumentedScript;
+use Cli\Helpers\Parameter;
+
+/**
+ * Display a message on standard error output, and exit script with non-zero
+ * return code
+ * @param string $message Message to display
+ * @param integer $code Non-zero return code
+ */
+function abort($message, $code = 1)
+{
+    fwrite(STDERR, $message . "\n");
+    exit($code);
+}
+
+/**
+ * Fetch a Webconsole JSON query
+ * @param string $url Webconsole URL
+ * @param string $id Command ID
+ * @param string $method  [description]
+ * @param array $params  [description]
+ * @param boolean $insecure [description]
+ * @return array Return the parsed response's `result` field
+ */
+function fetch($url, $id, $method, $params = [], $insecure = false) {
+    $data = json_encode([
+        'id' => $id,
+        'jsonrpc' => '2.0',
+        'method' => $method,
+        'params' => $params
+    ]);
+
+    $session = curl_init();
+    curl_setopt($session, CURLOPT_URL, $url);
+    curl_setopt($session, CURLOPT_TIMEOUT, 300);
+    curl_setopt($session, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($session, CURLOPT_POST, true);
+    curl_setopt($session, CURLOPT_POSTFIELDS, $data);
+    curl_setopt($session, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json',
+        'Content-Length: ' . strlen($data)
+    ]);
+
+    if ($insecure) {
+        curl_setopt($session, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($session, CURLOPT_SSL_VERIFYHOST, 0);
+    }
+
+    if (! $response = curl_exec($session)) {
+        abort(curl_error($session));
+    }
+
+    if (! $data = json_decode($response, true)) {
+        abort('Error parsing JSON: ' . json_last_error());
+    }
+
+    if (array_key_exists('error', $data)) {
+        abort($data['error']['message'] . ': ' . $data['error']['data']);
+    }
+
+    return $data['result'];
+}
+
+/**
+ * Script definition
+ * @var DocumentedScript
+ */
+$script = new DocumentedScript();
+$script
+    ->setName('webconsole')
+    ->setVersion('0.1.0')
+    ->setDescription('Command-line interface for Nickolay Kovalev\'s Web Console')
+    ->setCopyright('Copyright (c) 2017 Alexandre Mercier')
+    ->addParameter(new Parameter('u', 'username', Parameter::VALUE_REQUIRED), 'User name.')
+    ->addParameter(new Parameter('p', 'password', Parameter::VALUE_REQUIRED), 'Password.')
+    ->addParameter(new Parameter('P', 'path', null), 'Absolute or relative path')
+    ->addParameter(new Parameter('k', 'insecure', Parameter::VALUE_NO_VALUE), 'Allow connections to SSL sites without certs')
+    ->setProgram(function ($options, $arguments) {
+
+        // TODO find more elegant solution, ie fix at cli-helpers level
+        $optionsArgLength = 4;
+        if ($options['insecure']) {
+          $optionsArgLength++;
+        }
+        if ($options['path']) {
+          $optionsArgLength += 2;
+        }
+
+        // Check URL and COMMAND are provided
+        if (count($arguments) < $optionsArgLength + 2) {
+            abort('Syntax: webconsole [OPTIONS] URL COMMAND');
+        }
+
+        // 1. Login
+        $login = fetch($arguments[$optionsArgLength + 1], 1, 'login', [
+            $options['username'],
+            $options['password']
+        ]);
+
+        if (!$options['path']) {
+            $path = $login['environment']['path']; // no path, use default
+        }
+        else if (strpos($options['path'], '/') === 0) {
+            $path = $options['path']; // absolute path
+        }
+        else {
+            $path = $login['environment']['path'] . '/' . $options['path']; // relative path
+        }
+
+        // 2. Command
+        $data = fetch($arguments[$optionsArgLength + 1], 2, 'run', [
+            $login['token'],
+            array_merge([], $login['environment'], [
+                'path' => $path,
+                'user' => $options['username']
+            ]),
+            implode(' ', array_slice($arguments, $optionsArgLength + 2))
+        ]);
+        echo $data['output'] . "\n";
+    })
+    ->start();

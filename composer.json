@@ -9,6 +9,9 @@
       "email": "pro.alexandre.mercier@gmail.com"
     }
   ],
+  "bin": [
+    "bin/webconsole"
+  ],
   "require": {
     "amercier/cli-helpers": "^1.4"
   }
