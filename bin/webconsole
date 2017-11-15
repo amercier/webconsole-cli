@@ -79,7 +79,7 @@ function fetch($url, $id, $method, $params = [], $insecure = false) {
 $script = new DocumentedScript();
 $script
     ->setName('webconsole')
-    ->setVersion('0.1.0')
+    ->setVersion('0.1.3')
     ->setDescription('Command-line interface for Nickolay Kovalev\'s Web Console')
     ->setCopyright('Copyright (c) 2017 Alexandre Mercier')
     ->addParameter(new Parameter('k', 'insecure', Parameter::VALUE_NO_VALUE), 'Allow connections to SSL sites without certs')
