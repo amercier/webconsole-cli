@@ -82,10 +82,10 @@ $script
     ->setVersion('0.1.0')
     ->setDescription('Command-line interface for Nickolay Kovalev\'s Web Console')
     ->setCopyright('Copyright (c) 2017 Alexandre Mercier')
-    ->addParameter(new Parameter('u', 'username', Parameter::VALUE_REQUIRED), 'User name.')
-    ->addParameter(new Parameter('p', 'password', Parameter::VALUE_REQUIRED), 'Password.')
-    ->addParameter(new Parameter('P', 'path', null), 'Absolute or relative path')
     ->addParameter(new Parameter('k', 'insecure', Parameter::VALUE_NO_VALUE), 'Allow connections to SSL sites without certs')
+    ->addParameter(new Parameter('P', 'path', null), 'Absolute or relative path')
+    ->addParameter(new Parameter('p', 'password', Parameter::VALUE_REQUIRED), 'Password.')
+    ->addParameter(new Parameter('u', 'username', Parameter::VALUE_REQUIRED), 'User name.')
     ->setProgram(function ($options, $arguments) {
 
         // TODO find more elegant solution, ie fix at cli-helpers level
