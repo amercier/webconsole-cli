@@ -9,5 +9,7 @@
       "email": "pro.alexandre.mercier@gmail.com"
     }
   ],
-  "require": {}
+  "require": {
+    "amercier/cli-helpers": "^1.4"
+  }
 }
